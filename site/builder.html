@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Block Visual Builder</title>
+    <meta
+      name="description"
+      content="Create nested documentation blocks and capture structured values in a visual tree."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./builder.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-a" aria-hidden="true"></div>
+    <div class="bg-orb orb-b" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+
+    <header class="hero panel reveal">
+      <div class="hero-top">
+        <p class="eyebrow">[ BLOCK VISUAL BUILDER ]</p>
+        <a class="back-link" href="./index.html">Back To Knowledge Index</a>
+      </div>
+      <h1>Create Nested Blocks</h1>
+      <p class="hero-copy">
+        Build a block tree, click any block to add child blocks, and document each node with structured fields.
+      </p>
+      <div class="hero-actions">
+        <button id="addRootBtn" class="action-button" type="button">+ Add Root Block</button>
+        <button id="addChildBtn" class="action-button" type="button">+ Add Child To Selected</button>
+        <button id="exportBtn" class="ghost-button" type="button">Export JSON</button>
+        <label class="ghost-button file-label" for="importInput">Import JSON</label>
+        <input id="importInput" type="file" accept="application/json" hidden />
+        <button id="clearAllBtn" class="ghost-button" type="button">Clear All</button>
+      </div>
+      <p id="saveStatus" class="save-status">Ready</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel tree-panel reveal" aria-label="Block tree">
+        <div class="panel-head">
+          <h2>Block Tree</h2>
+          <p id="treeMeta" class="meta-text">0 blocks</p>
+        </div>
+        <div id="treeCanvas" class="tree-canvas" role="tree"></div>
+      </section>
+
+      <section class="panel detail-panel reveal" aria-label="Block documentation">
+        <div class="panel-head">
+          <h2>Block Document</h2>
+          <p class="meta-text">Selected block details</p>
+        </div>
+
+        <div id="emptyDetail" class="empty-state">
+          Create a root block or select an existing block to start documenting values.
+        </div>
+
+        <form id="detailForm" class="detail-form" hidden>
+          <label>
+            Title
+            <input id="titleInput" type="text" placeholder="Block title" />
+          </label>
+
+          <div class="triple-grid">
+            <label>
+              Type
+              <input id="typeInput" type="text" placeholder="feature, algo, design" />
+            </label>
+            <label>
+              Status
+              <input id="statusInput" type="text" placeholder="draft, proven, active" />
+            </label>
+            <label>
+              Tags (comma separated)
+              <input id="tagsInput" type="text" placeholder="api, ui, optimization" />
+            </label>
+          </div>
+
+          <label>
+            Notes
+            <textarea id="notesInput" rows="5" placeholder="What this block documents"></textarea>
+          </label>
+
+          <div class="panel-head compact">
+            <h3>Input Values</h3>
+            <button id="addValueBtn" class="mini-button" type="button">+ Add Value</button>
+          </div>
+
+          <div id="valuesList" class="values-list"></div>
+
+          <div class="detail-actions">
+            <button id="deleteBlockBtn" class="danger-button" type="button">Delete Block</button>
+            <button id="addChildInFormBtn" class="action-button" type="button">+ Add Child Block</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <template id="blockNodeTemplate">
+      <div class="block-node" role="treeitem">
+        <button class="node-button" type="button">
+          <span class="node-title"></span>
+          <span class="node-meta"></span>
+        </button>
+        <div class="node-children"></div>
+      </div>
+    </template>
+
+    <template id="valueRowTemplate">
+      <div class="value-row">
+        <input class="value-key" type="text" placeholder="Field name" />
+        <input class="value-value" type="text" placeholder="Field value" />
+        <button class="remove-value" type="button">Remove</button>
+      </div>
+    </template>
+
+    <script type="module" src="./builder.js"></script>
+  </body>
+</html>

@@ -40,6 +40,17 @@ python3 -m http.server 4173 --directory site
 
 Then open `http://localhost:4173` to check blocks by field, tags, and search.
 
+## Visual Block Builder
+
+- URL (local): `http://localhost:4173/builder.html`
+- Features:
+  - Create root blocks.
+  - Click a block and create child blocks.
+  - Document each block with title/type/status/tags/notes.
+  - Add custom input values as key-value rows.
+  - Auto-save to browser `localStorage`.
+  - Export/import the full block tree as JSON.
+
 ## GitHub Hosting
 
 - Repository URL: `https://github.com/okok147/Block`
@@ -58,6 +69,7 @@ Then open `http://localhost:4173` to check blocks by field, tags, and search.
 - `scripts/secret-scan.sh`: quick secret scan before push.
 - `scripts/build-site-data.mjs`: builds website data index from markdown.
 - `site/`: static website for browsing knowledge blocks by field.
+  - `site/builder.html`: nested block visualization + documentation builder.
 
 ## Standard Workflow
 
