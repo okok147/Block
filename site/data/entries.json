@@ -1,5 +1,9 @@
 {
-  "generatedAt": "2026-02-16T14:05:41.302Z",
+  "generatedAt": "2026-02-16T14:15:36.379Z",
+  "repo": {
+    "repoUrl": "https://github.com/okok147/Block",
+    "blobBaseUrl": "https://github.com/okok147/Block/blob/main"
+  },
   "counts": {
     "total": 10,
     "byField": {
@@ -256,9 +260,7 @@
       "field": "checklist",
       "fieldLabel": "Checklists",
       "relativePath": "knowledge/checklists/security-and-release.md",
-      "meta": {
-        "Quick secret scan passes": "`./scripts/secret-scan.sh`."
-      },
+      "meta": {},
       "tags": [],
       "preview": "No secrets in tracked files (`firebase-config.js` remains local).",
       "sections": [

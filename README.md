@@ -40,6 +40,12 @@ python3 -m http.server 4173 --directory site
 
 Then open `http://localhost:4173` to check blocks by field, tags, and search.
 
+## GitHub Hosting
+
+- Repository URL: `https://github.com/okok147/Block`
+- Expected Pages URL: `https://okok147.github.io/Block/`
+- Auto deployment workflow: `.github/workflows/deploy-pages.yml`
+
 ## Structure
 
 - `knowledge/INDEX.md`: central index for all entries.

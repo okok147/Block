@@ -122,6 +122,7 @@ function renderDetail(entry) {
     elements.detailMeta.innerHTML = "";
     elements.detailContent.innerHTML = "<p>Pick any block card to inspect full sections and implementation notes.</p>";
     elements.openSource.setAttribute("href", "#");
+    elements.openSource.textContent = "Open Source Markdown";
     return;
   }
 
@@ -149,7 +150,10 @@ function renderDetail(entry) {
     .join("");
 
   elements.detailContent.innerHTML = sectionHtml || `<p>${escapeHtml(entry.preview)}</p>`;
-  elements.openSource.setAttribute("href", `../${entry.relativePath}`);
+  const blobBaseUrl = state.data?.repo?.blobBaseUrl || "";
+  const sourceHref = blobBaseUrl ? `${blobBaseUrl}/${entry.relativePath}` : `../${entry.relativePath}`;
+  elements.openSource.setAttribute("href", sourceHref);
+  elements.openSource.textContent = blobBaseUrl ? "Open Source Markdown on GitHub" : "Open Source Markdown";
 }
 
 function updateSelectedCard() {

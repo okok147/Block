@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { promises as fs } from "node:fs";
+import { execSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -16,6 +17,7 @@ const fieldConfig = [
 ];
 
 const outputPath = path.join(repoRoot, "site", "data", "entries.json");
+const allowedMetaKeys = new Set(["Type", "Status", "Tags", "Date", "Domain"]);
 
 function normalizeTitle(raw) {
   return raw
@@ -34,6 +36,9 @@ function parseListMeta(lines) {
     }
     const key = match[1].trim();
     const value = match[2].trim();
+    if (!allowedMetaKeys.has(key)) {
+      continue;
+    }
     meta[key] = value;
   }
   return meta;
@@ -166,6 +171,49 @@ function toId(relativePath) {
   return relativePath.replace(/\.md$/, "").replace(/[\\/]/g, "--");
 }
 
+function normalizeRepoUrl(rawRemote) {
+  if (!rawRemote) {
+    return null;
+  }
+
+  const trimmed = rawRemote.trim();
+  if (trimmed.startsWith("git@github.com:")) {
+    const suffix = trimmed.replace("git@github.com:", "").replace(/\.git$/, "");
+    return `https://github.com/${suffix}`;
+  }
+
+  if (trimmed.startsWith("https://github.com/")) {
+    return trimmed.replace(/\.git$/, "");
+  }
+
+  if (trimmed.startsWith("ssh://git@github.com/")) {
+    const suffix = trimmed.replace("ssh://git@github.com/", "").replace(/\.git$/, "");
+    return `https://github.com/${suffix}`;
+  }
+
+  return null;
+}
+
+function detectRepoInfo() {
+  try {
+    const remote = execSync("git config --get remote.origin.url", {
+      cwd: repoRoot,
+      stdio: ["ignore", "pipe", "ignore"],
+      encoding: "utf8"
+    });
+    const repoUrl = normalizeRepoUrl(remote);
+    if (!repoUrl) {
+      return null;
+    }
+    return {
+      repoUrl,
+      blobBaseUrl: `${repoUrl}/blob/main`
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function walkMarkdown(dirPath) {
   const entries = [];
 
@@ -244,6 +292,7 @@ async function main() {
 
   const payload = {
     generatedAt: new Date().toISOString(),
+    repo: detectRepoInfo(),
     counts: {
       total: data.length,
       byField: fieldConfig.reduce((acc, field) => {
