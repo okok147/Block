@@ -8,6 +8,8 @@ Use this folder as the single source of truth for solved problems and reusable d
 - Keep entries concise and reusable.
 - Include tradeoffs, failure modes, and complexity.
 - Link each new entry in `knowledge/INDEX.md`.
+- Capture reusable solutions/patterns from other projects by default, even without an explicit request.
+- Sanitize external/project-specific details before storing knowledge here.
 
 ## Entry Types
 

@@ -9,6 +9,12 @@ A repo-specific system to store solved problems and reusable patterns that speed
 - Reusable UI aesthetic patterns (for stronger visual quality and consistency).
 - Lightweight quality and security checklists for shipping safely.
 
+## Cross-Project Capture Default
+
+- Any solved problem, reusable pattern, or design/system insight found in other projects must be captured in this Block repo by default.
+- This capture is proactive and does not require an explicit user request.
+- When source projects are private/sensitive, store only sanitized and generalized patterns (no secrets, private identifiers, or confidential business data).
+
 ## Quick Start
 
 ```bash
@@ -39,3 +45,10 @@ A repo-specific system to store solved problems and reusable patterns that speed
 2. Add links in `knowledge/INDEX.md`.
 3. Run `./scripts/secret-scan.sh`.
 4. Commit and push.
+
+## Cross-Project Intake Workflow
+
+1. Extract the reusable part from the source project.
+2. Generalize it into `knowledge/solutions/` or `knowledge/patterns/`.
+3. Remove sensitive details and keep only transferable logic/design.
+4. Index it in `knowledge/INDEX.md` and commit.
