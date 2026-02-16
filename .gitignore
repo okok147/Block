@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Runtime/build
+node_modules/
+dist/
+build/
+coverage/
+
+# Local env
+.env
+.env.*
+firebase-config.js
+
+# Editor
+.vscode/
+.idea/
