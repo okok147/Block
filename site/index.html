@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Block Knowledge Navigator</title>
+    <meta
+      name="description"
+      content="Browse solved problems and reusable patterns by field, tags, and keywords."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-a" aria-hidden="true"></div>
+    <div class="bg-orb orb-b" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+
+    <header class="hero panel reveal">
+      <p class="eyebrow">BLOCK REPO</p>
+      <h1>Knowledge Blocks By Field</h1>
+      <p class="hero-copy">
+        Inspect reusable coding algorithms, UI aesthetics, templates, and solved patterns from one searchable system.
+      </p>
+      <div id="heroMetrics" class="hero-metrics" aria-live="polite"></div>
+      <p id="generatedAt" class="generated-at">Loading index...</p>
+    </header>
+
+    <main class="layout">
+      <section class="controls panel reveal" aria-label="Filter controls">
+        <h2>Filter Blocks</h2>
+        <label class="search-label" for="searchInput">Search</label>
+        <input id="searchInput" type="search" placeholder="Find by title, tag, or content" autocomplete="off" />
+
+        <div class="control-group">
+          <p class="control-title">Field</p>
+          <div id="fieldFilters" class="filter-row"></div>
+        </div>
+
+        <div class="control-group">
+          <p class="control-title">Tags</p>
+          <div id="tagFilters" class="filter-row"></div>
+        </div>
+
+        <button id="clearFilters" class="ghost-button" type="button">Clear Filters</button>
+      </section>
+
+      <section class="results panel reveal" aria-label="Knowledge blocks">
+        <div class="results-head">
+          <h2>Blocks</h2>
+          <p id="resultCount" class="result-count"></p>
+        </div>
+        <div id="cardsGrid" class="cards-grid" aria-live="polite"></div>
+      </section>
+
+      <aside class="detail panel reveal" aria-label="Block details">
+        <p id="detailField" class="detail-field">Select a block</p>
+        <h2 id="detailTitle" class="detail-title">Knowledge Detail</h2>
+        <p id="detailPath" class="detail-path"></p>
+        <div id="detailMeta" class="detail-meta"></div>
+        <div id="detailContent" class="detail-content">
+          <p>Pick any block card to inspect full sections and implementation notes.</p>
+        </div>
+        <a id="openSource" class="source-link" href="#" target="_blank" rel="noopener noreferrer"
+          >Open Source Markdown</a
+        >
+      </aside>
+    </main>
+
+    <template id="cardTemplate">
+      <article class="card">
+        <p class="card-field"></p>
+        <h3 class="card-title"></h3>
+        <p class="card-preview"></p>
+        <div class="card-tags"></div>
+      </article>
+    </template>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

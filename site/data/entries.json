@@ -1,0 +1,425 @@
+{
+  "generatedAt": "2026-02-16T14:05:41.302Z",
+  "counts": {
+    "total": 10,
+    "byField": {
+      "solutions": 0,
+      "algorithm": 2,
+      "aesthetic": 2,
+      "checklist": 3,
+      "template": 3
+    }
+  },
+  "fields": [
+    {
+      "key": "solutions",
+      "label": "Solutions",
+      "dir": "knowledge/solutions"
+    },
+    {
+      "key": "algorithm",
+      "label": "Algorithm Patterns",
+      "dir": "knowledge/patterns/algorithms"
+    },
+    {
+      "key": "aesthetic",
+      "label": "Aesthetic/UI Patterns",
+      "dir": "knowledge/patterns/aesthetics"
+    },
+    {
+      "key": "checklist",
+      "label": "Checklists",
+      "dir": "knowledge/checklists"
+    },
+    {
+      "key": "template",
+      "label": "Templates",
+      "dir": "knowledge/templates"
+    }
+  ],
+  "tags": [
+    "accessibility",
+    "arrays",
+    "color",
+    "conversion",
+    "hierarchy",
+    "linear-scan",
+    "optimization",
+    "readability",
+    "streaming",
+    "strings",
+    "subarray",
+    "theming"
+  ],
+  "entries": [
+    {
+      "id": "knowledge--patterns--aesthetics--color-system-accessibility-rails",
+      "title": "Color System With Accessibility Rails",
+      "field": "aesthetic",
+      "fieldLabel": "Aesthetic/UI Patterns",
+      "relativePath": "knowledge/patterns/aesthetics/color-system-accessibility-rails.md",
+      "meta": {
+        "Type": "Aesthetic/UI",
+        "Status": "Proven",
+        "Tags": "color, accessibility, theming"
+      },
+      "tags": [
+        "color",
+        "accessibility",
+        "theming"
+      ],
+      "preview": "Building or extending a design system.",
+      "sections": [
+        {
+          "heading": "Use When",
+          "content": "- Building or extending a design system.\n- Product needs distinctive style without sacrificing readability."
+        },
+        {
+          "heading": "Visual Intent",
+          "content": "Create a recognizable palette where semantic roles remain consistent and readable across screens."
+        },
+        {
+          "heading": "Structure",
+          "content": "- Define role tokens first: `bg`, `surface`, `text`, `muted`, `primary`, `success`, `warning`, `danger`.\n- Map component styles to roles, not raw hex values."
+        },
+        {
+          "heading": "Color/Typography Rules",
+          "content": "- Ensure text/background contrast meets accessibility targets.\n- Keep interactive states (hover/focus/disabled) role-based and predictable.\n- Limit accent usage to preserve emphasis."
+        },
+        {
+          "heading": "Interaction/Motion Rules",
+          "content": "- Pair focus-visible styles with high-contrast outline.\n- Animate color transitions briefly to avoid flicker."
+        },
+        {
+          "heading": "Anti-Patterns",
+          "content": "- Per-component hardcoded colors.\n- Saturated accents used as large backgrounds without contrast checks."
+        }
+      ],
+      "raw": "# Pattern: Color System With Accessibility Rails\n\n- Type: Aesthetic/UI\n- Status: Proven\n- Tags: color, accessibility, theming\n\n## Use When\n\n- Building or extending a design system.\n- Product needs distinctive style without sacrificing readability.\n\n## Visual Intent\n\nCreate a recognizable palette where semantic roles remain consistent and readable across screens.\n\n## Structure\n\n- Define role tokens first: `bg`, `surface`, `text`, `muted`, `primary`, `success`, `warning`, `danger`.\n- Map component styles to roles, not raw hex values.\n\n## Color/Typography Rules\n\n- Ensure text/background contrast meets accessibility targets.\n- Keep interactive states (hover/focus/disabled) role-based and predictable.\n- Limit accent usage to preserve emphasis.\n\n## Interaction/Motion Rules\n\n- Pair focus-visible styles with high-contrast outline.\n- Animate color transitions briefly to avoid flicker.\n\n## Anti-Patterns\n\n- Per-component hardcoded colors.\n- Saturated accents used as large backgrounds without contrast checks."
+    },
+    {
+      "id": "knowledge--patterns--aesthetics--visual-hierarchy-layers",
+      "title": "Visual Hierarchy Layers",
+      "field": "aesthetic",
+      "fieldLabel": "Aesthetic/UI Patterns",
+      "relativePath": "knowledge/patterns/aesthetics/visual-hierarchy-layers.md",
+      "meta": {
+        "Type": "Aesthetic/UI",
+        "Status": "Proven",
+        "Tags": "hierarchy, readability, conversion"
+      },
+      "tags": [
+        "hierarchy",
+        "readability",
+        "conversion"
+      ],
+      "preview": "Pages need clear scanning order and strong call-to-action.",
+      "sections": [
+        {
+          "heading": "Use When",
+          "content": "- Pages need clear scanning order and strong call-to-action.\n- Content density risks visual noise."
+        },
+        {
+          "heading": "Visual Intent",
+          "content": "Users should identify value proposition, supporting detail, and next action within the first viewport."
+        },
+        {
+          "heading": "Structure",
+          "content": "- Hierarchy: headline -> supporting copy -> proof -> primary action.\n- Spacing rhythm: use one base unit and 2x/3x multiples between layers.\n- Alignment: keep primary text/action on one vertical axis."
+        },
+        {
+          "heading": "Color/Typography Rules",
+          "content": "- Reserve highest contrast for headline and primary CTA.\n- Keep body copy at comfortable line length and contrast.\n- Use one expressive display face and one readable body face."
+        },
+        {
+          "heading": "Interaction/Motion Rules",
+          "content": "- Entrance motion should reinforce reading order.\n- Animate only meaningful transitions (state change, focus, action)."
+        },
+        {
+          "heading": "Anti-Patterns",
+          "content": "- Similar visual weight across all blocks.\n- Multiple competing primary actions in one view."
+        }
+      ],
+      "raw": "# Pattern: Visual Hierarchy Layers\n\n- Type: Aesthetic/UI\n- Status: Proven\n- Tags: hierarchy, readability, conversion\n\n## Use When\n\n- Pages need clear scanning order and strong call-to-action.\n- Content density risks visual noise.\n\n## Visual Intent\n\nUsers should identify value proposition, supporting detail, and next action within the first viewport.\n\n## Structure\n\n- Hierarchy: headline -> supporting copy -> proof -> primary action.\n- Spacing rhythm: use one base unit and 2x/3x multiples between layers.\n- Alignment: keep primary text/action on one vertical axis.\n\n## Color/Typography Rules\n\n- Reserve highest contrast for headline and primary CTA.\n- Keep body copy at comfortable line length and contrast.\n- Use one expressive display face and one readable body face.\n\n## Interaction/Motion Rules\n\n- Entrance motion should reinforce reading order.\n- Animate only meaningful transitions (state change, focus, action).\n\n## Anti-Patterns\n\n- Similar visual weight across all blocks.\n- Multiple competing primary actions in one view."
+    },
+    {
+      "id": "knowledge--patterns--algorithms--sliding-window",
+      "title": "Sliding Window",
+      "field": "algorithm",
+      "fieldLabel": "Algorithm Patterns",
+      "relativePath": "knowledge/patterns/algorithms/sliding-window.md",
+      "meta": {
+        "Type": "Algorithm",
+        "Status": "Proven",
+        "Tags": "strings, arrays, subarray, streaming"
+      },
+      "tags": [
+        "strings",
+        "arrays",
+        "subarray",
+        "streaming"
+      ],
+      "preview": "You need best/valid contiguous segment.",
+      "sections": [
+        {
+          "heading": "Use When",
+          "content": "- You need best/valid contiguous segment.\n- Constraint can be updated incrementally as window moves."
+        },
+        {
+          "heading": "Avoid When",
+          "content": "- Validity requires global recomputation each move."
+        },
+        {
+          "heading": "Core Idea",
+          "content": "Track a window `[left, right]` and maintain incremental state (counts/sum/etc). Expand to include candidates, shrink until constraints are valid, and update answer per invariant."
+        },
+        {
+          "heading": "Complexity/Cost",
+          "content": "- Time: Typically `O(n)`.\n- Space: `O(k)` for tracked state.\n- Implementation complexity: medium."
+        },
+        {
+          "heading": "Skeleton",
+          "content": "```txt\nleft = 0\nfor right in range(n):\n  add item(right)\n  while invalid:\n    remove item(left)\n    left += 1\n  update answer\n```"
+        },
+        {
+          "heading": "Pitfalls",
+          "content": "- Using non-monotonic constraint with naive shrink loop.\n- Updating answer before restoring validity."
+        }
+      ],
+      "raw": "# Pattern: Sliding Window\n\n- Type: Algorithm\n- Status: Proven\n- Tags: strings, arrays, subarray, streaming\n\n## Use When\n\n- You need best/valid contiguous segment.\n- Constraint can be updated incrementally as window moves.\n\n## Avoid When\n\n- Validity requires global recomputation each move.\n\n## Core Idea\n\nTrack a window `[left, right]` and maintain incremental state (counts/sum/etc). Expand to include candidates, shrink until constraints are valid, and update answer per invariant.\n\n## Complexity/Cost\n\n- Time: Typically `O(n)`.\n- Space: `O(k)` for tracked state.\n- Implementation complexity: medium.\n\n## Skeleton\n\n```txt\nleft = 0\nfor right in range(n):\n  add item(right)\n  while invalid:\n    remove item(left)\n    left += 1\n  update answer\n```\n\n## Pitfalls\n\n- Using non-monotonic constraint with naive shrink loop.\n- Updating answer before restoring validity."
+    },
+    {
+      "id": "knowledge--patterns--algorithms--two-pointers",
+      "title": "Two Pointers",
+      "field": "algorithm",
+      "fieldLabel": "Algorithm Patterns",
+      "relativePath": "knowledge/patterns/algorithms/two-pointers.md",
+      "meta": {
+        "Type": "Algorithm",
+        "Status": "Proven",
+        "Tags": "arrays, optimization, linear-scan"
+      },
+      "tags": [
+        "arrays",
+        "optimization",
+        "linear-scan"
+      ],
+      "preview": "Data is in a sequence and relative positions matter.",
+      "sections": [
+        {
+          "heading": "Use When",
+          "content": "- Data is in a sequence and relative positions matter.\n- You can move one or both ends to shrink search space."
+        },
+        {
+          "heading": "Avoid When",
+          "content": "- Random access jumps dominate and pointer movement adds no pruning."
+        },
+        {
+          "heading": "Core Idea",
+          "content": "Maintain two indices that move based on an invariant. At each step, eliminate impossible regions without revisiting all pairs."
+        },
+        {
+          "heading": "Complexity/Cost",
+          "content": "- Time: Often `O(n)` after sort or on pre-ordered data.\n- Space: `O(1)` extra (excluding sort cost).\n- Implementation complexity: low to medium."
+        },
+        {
+          "heading": "Skeleton",
+          "content": "```txt\nleft = 0\nright = n - 1\nwhile left < right:\n  evaluate pair/state\n  if condition too small: left += 1\n  else: right -= 1\n```"
+        },
+        {
+          "heading": "Pitfalls",
+          "content": "- Missing invariant definition before coding.\n- Forgetting sort precondition when required."
+        }
+      ],
+      "raw": "# Pattern: Two Pointers\n\n- Type: Algorithm\n- Status: Proven\n- Tags: arrays, optimization, linear-scan\n\n## Use When\n\n- Data is in a sequence and relative positions matter.\n- You can move one or both ends to shrink search space.\n\n## Avoid When\n\n- Random access jumps dominate and pointer movement adds no pruning.\n\n## Core Idea\n\nMaintain two indices that move based on an invariant. At each step, eliminate impossible regions without revisiting all pairs.\n\n## Complexity/Cost\n\n- Time: Often `O(n)` after sort or on pre-ordered data.\n- Space: `O(1)` extra (excluding sort cost).\n- Implementation complexity: low to medium.\n\n## Skeleton\n\n```txt\nleft = 0\nright = n - 1\nwhile left < right:\n  evaluate pair/state\n  if condition too small: left += 1\n  else: right -= 1\n```\n\n## Pitfalls\n\n- Missing invariant definition before coding.\n- Forgetting sort precondition when required."
+    },
+    {
+      "id": "knowledge--checklists--engineering-quality",
+      "title": "Engineering Quality Checklist",
+      "field": "checklist",
+      "fieldLabel": "Checklists",
+      "relativePath": "knowledge/checklists/engineering-quality.md",
+      "meta": {},
+      "tags": [],
+      "preview": "Problem statement and constraints are explicit.",
+      "sections": [
+        {
+          "heading": "Details",
+          "content": "- Problem statement and constraints are explicit.\n- Chosen approach includes rejected alternatives and rationale.\n- Naming is clear and behavior-focused.\n- Edge cases are documented and covered.\n- Complexity tradeoffs are stated.\n- Tests or validation steps are captured.\n- Reusable pattern is extracted into `knowledge/patterns/` when applicable.\n- If the work came from another project, the reusable solution/pattern is still recorded in this repo without waiting for a request."
+        }
+      ],
+      "raw": "# Engineering Quality Checklist\n\n- Problem statement and constraints are explicit.\n- Chosen approach includes rejected alternatives and rationale.\n- Naming is clear and behavior-focused.\n- Edge cases are documented and covered.\n- Complexity tradeoffs are stated.\n- Tests or validation steps are captured.\n- Reusable pattern is extracted into `knowledge/patterns/` when applicable.\n- If the work came from another project, the reusable solution/pattern is still recorded in this repo without waiting for a request."
+    },
+    {
+      "id": "knowledge--checklists--security-and-release",
+      "title": "Security And Release Checklist",
+      "field": "checklist",
+      "fieldLabel": "Checklists",
+      "relativePath": "knowledge/checklists/security-and-release.md",
+      "meta": {
+        "Quick secret scan passes": "`./scripts/secret-scan.sh`."
+      },
+      "tags": [],
+      "preview": "No secrets in tracked files (`firebase-config.js` remains local).",
+      "sections": [
+        {
+          "heading": "Details",
+          "content": "- No secrets in tracked files (`firebase-config.js` remains local).\n- Placeholder config only in `firebase-config.example.js`.\n- Quick secret scan passes: `./scripts/secret-scan.sh`.\n- Cross-project entries are sanitized (no confidential names/IDs/tokens/client data).\n- New files are linked in `knowledge/INDEX.md`.\n- Commit message describes meaningful change.\n- Push succeeded and remote status verified."
+        }
+      ],
+      "raw": "# Security And Release Checklist\n\n- No secrets in tracked files (`firebase-config.js` remains local).\n- Placeholder config only in `firebase-config.example.js`.\n- Quick secret scan passes: `./scripts/secret-scan.sh`.\n- Cross-project entries are sanitized (no confidential names/IDs/tokens/client data).\n- New files are linked in `knowledge/INDEX.md`.\n- Commit message describes meaningful change.\n- Push succeeded and remote status verified."
+    },
+    {
+      "id": "knowledge--checklists--ui-quality",
+      "title": "UI Quality Checklist",
+      "field": "checklist",
+      "fieldLabel": "Checklists",
+      "relativePath": "knowledge/checklists/ui-quality.md",
+      "meta": {},
+      "tags": [],
+      "preview": "Visual hierarchy is obvious in first glance.",
+      "sections": [
+        {
+          "heading": "Details",
+          "content": "- Visual hierarchy is obvious in first glance.\n- Typography scale and spacing rhythm are consistent.\n- Color usage follows semantic roles.\n- Contrast and focus visibility support accessibility.\n- Primary action is singular and clear.\n- Motion supports meaning, not decoration.\n- Layout remains clear on mobile and desktop."
+        }
+      ],
+      "raw": "# UI Quality Checklist\n\n- Visual hierarchy is obvious in first glance.\n- Typography scale and spacing rhythm are consistent.\n- Color usage follows semantic roles.\n- Contrast and focus visibility support accessibility.\n- Primary action is singular and clear.\n- Motion supports meaning, not decoration.\n- Layout remains clear on mobile and desktop."
+    },
+    {
+      "id": "knowledge--templates--pattern-template",
+      "title": "<title>",
+      "field": "template",
+      "fieldLabel": "Templates",
+      "relativePath": "knowledge/templates/pattern-template.md",
+      "meta": {
+        "Type": "Algorithm",
+        "Status": "Proven",
+        "Tags": "<tag1>, <tag2>"
+      },
+      "tags": [],
+      "preview": "<condition 1>",
+      "sections": [
+        {
+          "heading": "Use When",
+          "content": "- <condition 1>\n- <condition 2>"
+        },
+        {
+          "heading": "Avoid When",
+          "content": "- <condition 1>"
+        },
+        {
+          "heading": "Core Idea",
+          "content": "Explain the principle in 3-6 lines."
+        },
+        {
+          "heading": "Complexity/Cost",
+          "content": "- Time: <...>\n- Space: <...>\n- Implementation complexity: <low | medium | high>"
+        },
+        {
+          "heading": "Skeleton",
+          "content": "```txt\n<high-level pseudocode>\n```"
+        },
+        {
+          "heading": "Pitfalls",
+          "content": "- <pitfall 1>\n- <pitfall 2>"
+        },
+        {
+          "heading": "Example Links",
+          "content": "- <solution or PR link>"
+        }
+      ],
+      "raw": "# Pattern: <title>\n\n- Type: Algorithm\n- Status: Proven\n- Tags: <tag1>, <tag2>\n\n## Use When\n\n- <condition 1>\n- <condition 2>\n\n## Avoid When\n\n- <condition 1>\n\n## Core Idea\n\nExplain the principle in 3-6 lines.\n\n## Complexity/Cost\n\n- Time: <...>\n- Space: <...>\n- Implementation complexity: <low | medium | high>\n\n## Skeleton\n\n```txt\n<high-level pseudocode>\n```\n\n## Pitfalls\n\n- <pitfall 1>\n- <pitfall 2>\n\n## Example Links\n\n- <solution or PR link>"
+    },
+    {
+      "id": "knowledge--templates--solution-template",
+      "title": "<title>",
+      "field": "template",
+      "fieldLabel": "Templates",
+      "relativePath": "knowledge/templates/solution-template.md",
+      "meta": {
+        "Date": "<YYYY-MM-DD>",
+        "Domain": "<frontend | backend | fullstack | data | algo>",
+        "Tags": "<tag1>, <tag2>"
+      },
+      "tags": [],
+      "preview": "Describe the exact problem and constraints.",
+      "sections": [
+        {
+          "heading": "Problem",
+          "content": "Describe the exact problem and constraints."
+        },
+        {
+          "heading": "Final Approach",
+          "content": "Describe the selected approach and why it was chosen over alternatives."
+        },
+        {
+          "heading": "Complexity",
+          "content": "- Time: <...>\n- Space: <...>"
+        },
+        {
+          "heading": "Edge Cases Covered",
+          "content": "- <case 1>\n- <case 2>"
+        },
+        {
+          "heading": "Implementation Notes",
+          "content": "- <key detail 1>\n- <key detail 2>"
+        },
+        {
+          "heading": "Reuse Pattern",
+          "content": "What reusable pattern from this solution should be reused later?"
+        },
+        {
+          "heading": "Validation",
+          "content": "- Tests/manual checks performed.\n- Result and confidence."
+        }
+      ],
+      "raw": "# Solution: <title>\n\n- Date: <YYYY-MM-DD>\n- Domain: <frontend | backend | fullstack | data | algo>\n- Tags: <tag1>, <tag2>\n\n## Problem\n\nDescribe the exact problem and constraints.\n\n## Final Approach\n\nDescribe the selected approach and why it was chosen over alternatives.\n\n## Complexity\n\n- Time: <...>\n- Space: <...>\n\n## Edge Cases Covered\n\n- <case 1>\n- <case 2>\n\n## Implementation Notes\n\n- <key detail 1>\n- <key detail 2>\n\n## Reuse Pattern\n\nWhat reusable pattern from this solution should be reused later?\n\n## Validation\n\n- Tests/manual checks performed.\n- Result and confidence."
+    },
+    {
+      "id": "knowledge--templates--ui-pattern-template",
+      "title": "<title>",
+      "field": "template",
+      "fieldLabel": "Templates",
+      "relativePath": "knowledge/templates/ui-pattern-template.md",
+      "meta": {
+        "Type": "Aesthetic/UI",
+        "Status": "Proven",
+        "Tags": "<tag1>, <tag2>"
+      },
+      "tags": [],
+      "preview": "<condition 1>",
+      "sections": [
+        {
+          "heading": "Use When",
+          "content": "- <condition 1>\n- <condition 2>"
+        },
+        {
+          "heading": "Visual Intent",
+          "content": "State what the layout/style should make users feel and understand first."
+        },
+        {
+          "heading": "Structure",
+          "content": "- Hierarchy: <headline -> support -> action>\n- Spacing rhythm: <rule>\n- Alignment system: <grid/flow>"
+        },
+        {
+          "heading": "Color/Typography Rules",
+          "content": "- Primary color role: <...>\n- Contrast target: <...>\n- Typeface pairing and fallback: <...>"
+        },
+        {
+          "heading": "Interaction/Motion Rules",
+          "content": "- <rule 1>\n- <rule 2>"
+        },
+        {
+          "heading": "Anti-Patterns",
+          "content": "- <what to avoid>"
+        },
+        {
+          "heading": "Example Links",
+          "content": "- <page/screenshot/PR>"
+        }
+      ],
+      "raw": "# Pattern: <title>\n\n- Type: Aesthetic/UI\n- Status: Proven\n- Tags: <tag1>, <tag2>\n\n## Use When\n\n- <condition 1>\n- <condition 2>\n\n## Visual Intent\n\nState what the layout/style should make users feel and understand first.\n\n## Structure\n\n- Hierarchy: <headline -> support -> action>\n- Spacing rhythm: <rule>\n- Alignment system: <grid/flow>\n\n## Color/Typography Rules\n\n- Primary color role: <...>\n- Contrast target: <...>\n- Typeface pairing and fallback: <...>\n\n## Interaction/Motion Rules\n\n- <rule 1>\n- <rule 2>\n\n## Anti-Patterns\n\n- <what to avoid>\n\n## Example Links\n\n- <page/screenshot/PR>"
+    }
+  ]
+}

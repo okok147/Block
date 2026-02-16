@@ -28,6 +28,18 @@ A repo-specific system to store solved problems and reusable patterns that speed
 ./scripts/new-entry.sh ui-pattern "hero layout rhythm"
 ```
 
+## Website (Field Block Checker)
+
+```bash
+# Build website data from all markdown knowledge files
+node scripts/build-site-data.mjs
+
+# Run local website
+python3 -m http.server 4173 --directory site
+```
+
+Then open `http://localhost:4173` to check blocks by field, tags, and search.
+
 ## Structure
 
 - `knowledge/INDEX.md`: central index for all entries.
@@ -38,6 +50,8 @@ A repo-specific system to store solved problems and reusable patterns that speed
 - `knowledge/checklists/`: quality/security checks.
 - `scripts/new-entry.sh`: entry generator.
 - `scripts/secret-scan.sh`: quick secret scan before push.
+- `scripts/build-site-data.mjs`: builds website data index from markdown.
+- `site/`: static website for browsing knowledge blocks by field.
 
 ## Standard Workflow
 
