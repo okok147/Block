@@ -17,15 +17,6 @@
     <link rel="stylesheet" href="./builder.css" />
   </head>
   <body>
-    <div class="mountain-scene" aria-hidden="true">
-      <div class="paper-grain"></div>
-      <div class="sun-glow"></div>
-      <div class="mountain back"></div>
-      <div class="mountain mid"></div>
-      <div class="mountain front"></div>
-      <div class="ground-haze"></div>
-    </div>
-
     <header class="hero panel reveal">
       <div class="hero-top">
         <p class="eyebrow">[ BLOCK VISUAL BUILDER ]</p>
@@ -33,7 +24,7 @@
       </div>
       <h1>Create Nested Blocks</h1>
       <p class="hero-copy">
-        Build a block tree, click any block to add child blocks, and document each node with structured fields.
+        Double-click anywhere on the paper to create a new block snapped to the current grid. Double-click a block to create a child block.
       </p>
       <div class="hero-actions">
         <button id="addRootBtn" class="action-button" type="button">+ Add Root Block</button>
@@ -47,12 +38,12 @@
     </header>
 
     <main class="layout">
-      <section class="panel tree-panel reveal" aria-label="Block tree">
+      <section class="panel tree-panel reveal" aria-label="Paper grid">
         <div class="panel-head">
-          <h2>Block Tree</h2>
+          <h2>Paper Grid</h2>
           <p id="treeMeta" class="meta-text">0 blocks</p>
         </div>
-        <div id="treeCanvas" class="tree-canvas" role="tree"></div>
+        <div id="treeCanvas" class="tree-canvas" role="application" aria-label="Block grid workspace"></div>
       </section>
 
       <section class="panel detail-panel reveal" aria-label="Block documentation">
@@ -107,13 +98,10 @@
     </main>
 
     <template id="blockNodeTemplate">
-      <div class="block-node" role="treeitem">
-        <button class="node-button" type="button">
-          <span class="node-title"></span>
-          <span class="node-meta"></span>
-        </button>
-        <div class="node-children"></div>
-      </div>
+      <button class="grid-node" type="button">
+        <span class="node-title"></span>
+        <span class="node-meta"></span>
+      </button>
     </template>
 
     <template id="valueRowTemplate">

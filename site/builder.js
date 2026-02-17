@@ -1,5 +1,14 @@
 const STORAGE_KEY = "block_visual_builder_v1";
 
+const GRID = {
+  pad: 20,
+  col: 180,
+  row: 120,
+  nodeW: 156,
+  nodeH: 78,
+  maxSearchRadius: 60
+};
+
 const state = {
   blocks: [],
   selectedId: null,
@@ -58,65 +67,186 @@ function saveState() {
   setStatus(`Saved ${new Date().toLocaleTimeString()}`);
 }
 
+function sanitizeBlock(rawBlock, index) {
+  const id = String(rawBlock?.id || makeId());
+  const gxRaw = Number(rawBlock?.gx);
+  const gyRaw = Number(rawBlock?.gy);
+
+  return {
+    id,
+    parentId: rawBlock?.parentId ? String(rawBlock.parentId) : null,
+    title: String(rawBlock?.title || "New Block"),
+    type: String(rawBlock?.type || ""),
+    status: String(rawBlock?.status || "draft"),
+    tags: String(rawBlock?.tags || ""),
+    notes: String(rawBlock?.notes || ""),
+    values: Array.isArray(rawBlock?.values)
+      ? rawBlock.values.map((item) => ({
+          key: String(item?.key || ""),
+          value: String(item?.value || "")
+        }))
+      : [{ key: "", value: "" }],
+    gx: Number.isFinite(gxRaw) ? Math.max(0, Math.round(gxRaw)) : index % 6,
+    gy: Number.isFinite(gyRaw) ? Math.max(0, Math.round(gyRaw)) : Math.floor(index / 6),
+    createdAt: String(rawBlock?.createdAt || nowIso()),
+    updatedAt: String(rawBlock?.updatedAt || nowIso())
+  };
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       return;
     }
+
     const parsed = JSON.parse(raw);
     if (!parsed || !Array.isArray(parsed.blocks)) {
       return;
     }
 
-    state.blocks = parsed.blocks
-      .map((block) => ({
-        id: String(block.id || makeId()),
-        parentId: block.parentId ? String(block.parentId) : null,
-        title: String(block.title || "Untitled Block"),
-        type: String(block.type || ""),
-        status: String(block.status || ""),
-        tags: String(block.tags || ""),
-        notes: String(block.notes || ""),
-        values: Array.isArray(block.values)
-          ? block.values.map((item) => ({
-              key: String(item?.key || ""),
-              value: String(item?.value || "")
-            }))
-          : [],
-        createdAt: String(block.createdAt || nowIso()),
-        updatedAt: String(block.updatedAt || nowIso())
-      }))
-      .filter((block) => block.id);
-
+    state.blocks = parsed.blocks.map((block, index) => sanitizeBlock(block, index)).filter((block) => block.id);
     normalizeStructure();
 
     if (state.blocks.length > 0) {
       state.selectedId = state.blocks[0].id;
     }
   } catch {
-    setStatus("Unable to load saved state.");
+    setStatus("Unable to load saved blocks.");
   }
 }
 
+function getBlockById(blockId) {
+  return state.blocks.find((block) => block.id === blockId) || null;
+}
+
 function selectedBlock() {
-  return state.blocks.find((block) => block.id === state.selectedId) || null;
+  return getBlockById(state.selectedId);
 }
 
 function blockChildren(parentId) {
   return state.blocks.filter((block) => block.parentId === parentId);
 }
 
+function wouldCreateCycle(blockId, parentId) {
+  if (!parentId) {
+    return false;
+  }
+
+  const visited = new Set();
+  let currentId = parentId;
+
+  while (currentId) {
+    if (currentId === blockId) {
+      return true;
+    }
+
+    if (visited.has(currentId)) {
+      return true;
+    }
+    visited.add(currentId);
+
+    const current = getBlockById(currentId);
+    if (!current || !current.parentId) {
+      break;
+    }
+    currentId = current.parentId;
+  }
+
+  return false;
+}
+
+function keyForCell(gx, gy) {
+  return `${gx},${gy}`;
+}
+
+function occupiedCells(excludeId = null) {
+  const set = new Set();
+  for (const block of state.blocks) {
+    if (excludeId && block.id === excludeId) {
+      continue;
+    }
+    set.add(keyForCell(block.gx, block.gy));
+  }
+  return set;
+}
+
+function findFreeGridCell(startGx, startGy, occupied) {
+  const originX = Math.max(0, Math.round(startGx));
+  const originY = Math.max(0, Math.round(startGy));
+
+  if (!occupied.has(keyForCell(originX, originY))) {
+    return [originX, originY];
+  }
+
+  for (let radius = 1; radius <= GRID.maxSearchRadius; radius += 1) {
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) {
+          continue;
+        }
+
+        const candidateX = originX + dx;
+        const candidateY = originY + dy;
+        if (candidateX < 0 || candidateY < 0) {
+          continue;
+        }
+
+        if (!occupied.has(keyForCell(candidateX, candidateY))) {
+          return [candidateX, candidateY];
+        }
+      }
+    }
+  }
+
+  return [originX + GRID.maxSearchRadius + 1, originY];
+}
+
+function normalizePositions() {
+  const occupied = new Set();
+  let fallbackSeed = 0;
+
+  for (const block of state.blocks) {
+    let gx = Number(block.gx);
+    let gy = Number(block.gy);
+
+    if (!Number.isFinite(gx) || gx < 0 || !Number.isFinite(gy) || gy < 0) {
+      gx = fallbackSeed % 6;
+      gy = Math.floor(fallbackSeed / 6);
+      fallbackSeed += 1;
+    }
+
+    gx = Math.round(gx);
+    gy = Math.round(gy);
+
+    const key = keyForCell(gx, gy);
+    if (occupied.has(key)) {
+      const [nextGx, nextGy] = findFreeGridCell(gx, gy, occupied);
+      block.gx = nextGx;
+      block.gy = nextGy;
+      occupied.add(keyForCell(nextGx, nextGy));
+    } else {
+      block.gx = gx;
+      block.gy = gy;
+      occupied.add(key);
+    }
+  }
+}
+
 function normalizeStructure() {
   const idSet = new Set(state.blocks.map((block) => block.id));
+
   for (const block of state.blocks) {
     if (!block.parentId) {
       continue;
     }
-    if (block.parentId === block.id || !idSet.has(block.parentId)) {
+
+    if (!idSet.has(block.parentId) || block.parentId === block.id || wouldCreateCycle(block.id, block.parentId)) {
       block.parentId = null;
     }
   }
+
+  normalizePositions();
 }
 
 function descendantIds(blockId) {
@@ -135,7 +265,35 @@ function descendantIds(blockId) {
   return ids;
 }
 
-function createBlock(parentId = null) {
+function defaultStartCell(parentId) {
+  if (parentId) {
+    const parent = getBlockById(parentId);
+    if (parent) {
+      return [parent.gx + 1, parent.gy];
+    }
+  }
+
+  return [0, 0];
+}
+
+function createBlock({ parentId = null, gx = null, gy = null } = {}) {
+  if (parentId && !getBlockById(parentId)) {
+    parentId = null;
+  }
+
+  const occupied = occupiedCells();
+  let targetX;
+  let targetY;
+
+  if (Number.isFinite(Number(gx)) && Number.isFinite(Number(gy))) {
+    targetX = Math.max(0, Math.round(Number(gx)));
+    targetY = Math.max(0, Math.round(Number(gy)));
+  } else {
+    [targetX, targetY] = defaultStartCell(parentId);
+  }
+
+  const [finalX, finalY] = findFreeGridCell(targetX, targetY, occupied);
+
   const block = {
     id: makeId(),
     parentId,
@@ -145,6 +303,8 @@ function createBlock(parentId = null) {
     tags: "",
     notes: "",
     values: [{ key: "", value: "" }],
+    gx: finalX,
+    gy: finalY,
     createdAt: nowIso(),
     updatedAt: nowIso()
   };
@@ -154,6 +314,7 @@ function createBlock(parentId = null) {
   markDirty();
   saveState();
   render();
+  setStatus(`Created block at grid (${finalX}, ${finalY}).`);
 }
 
 function updateBlock(patch) {
@@ -165,7 +326,7 @@ function updateBlock(patch) {
   Object.assign(block, patch, { updatedAt: nowIso() });
   markDirty();
   saveState();
-  renderTree();
+  renderWorkspace();
 }
 
 function removeBlock(blockId) {
@@ -193,9 +354,8 @@ function exportState() {
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
-  const safeDate = new Date().toISOString().slice(0, 10);
   anchor.href = url;
-  anchor.download = `block-visual-${safeDate}.json`;
+  anchor.download = `block-grid-${new Date().toISOString().slice(0, 10)}.json`;
   anchor.click();
   URL.revokeObjectURL(url);
   setStatus("Export complete.");
@@ -209,24 +369,10 @@ async function importState(file) {
   const text = await file.text();
   const parsed = JSON.parse(text);
   if (!parsed || !Array.isArray(parsed.blocks)) {
-    throw new Error("Invalid JSON format");
+    throw new Error("Invalid JSON format.");
   }
 
-  state.blocks = parsed.blocks.map((block) => ({
-    id: String(block.id || makeId()),
-    parentId: block.parentId ? String(block.parentId) : null,
-    title: String(block.title || "Untitled Block"),
-    type: String(block.type || ""),
-    status: String(block.status || ""),
-    tags: String(block.tags || ""),
-    notes: String(block.notes || ""),
-    values: Array.isArray(block.values)
-      ? block.values.map((item) => ({ key: String(item?.key || ""), value: String(item?.value || "") }))
-      : [],
-    createdAt: String(block.createdAt || nowIso()),
-    updatedAt: String(block.updatedAt || nowIso())
-  }));
-
+  state.blocks = parsed.blocks.map((block, index) => sanitizeBlock(block, index));
   normalizeStructure();
   state.selectedId = state.blocks[0]?.id || null;
   markDirty();
@@ -235,59 +381,110 @@ async function importState(file) {
   setStatus(`Imported ${state.blocks.length} blocks.`);
 }
 
-function renderTreeNode(block, depth = 0, visited = new Set()) {
-  if (visited.has(block.id)) {
-    return document.createTextNode("");
-  }
-  visited.add(block.id);
-
-  const fragment = elements.blockNodeTemplate.content.cloneNode(true);
-  const wrapper = fragment.querySelector(".block-node");
-  const button = fragment.querySelector(".node-button");
-  const title = fragment.querySelector(".node-title");
-  const meta = fragment.querySelector(".node-meta");
-  const childrenSlot = fragment.querySelector(".node-children");
-
-  wrapper.style.marginLeft = `${Math.min(depth * 16, 64)}px`;
-  button.dataset.id = block.id;
-  title.textContent = block.title || "Untitled Block";
-
-  const childCount = blockChildren(block.id).length;
-  const typeLabel = block.type ? block.type : "untyped";
-  meta.textContent = `${typeLabel} | ${childCount} child${childCount === 1 ? "" : "ren"}`;
-
-  if (state.selectedId === block.id) {
-    button.classList.add("active");
-  }
-
-  button.addEventListener("click", () => {
-    state.selectedId = block.id;
-    render();
-  });
-
-  const children = blockChildren(block.id);
-  for (const child of children) {
-    childrenSlot.appendChild(renderTreeNode(child, depth + 1, new Set(visited)));
-  }
-
-  return fragment;
+function blockCenter(block) {
+  const x = GRID.pad + block.gx * GRID.col + GRID.nodeW / 2;
+  const y = GRID.pad + block.gy * GRID.row + GRID.nodeH / 2;
+  return { x, y };
 }
 
-function renderTree() {
-  const roots = state.blocks.filter((block) => !block.parentId);
+function renderLinks(surfaceWidth, surfaceHeight) {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.classList.add("links-layer");
+  svg.setAttribute("width", String(surfaceWidth));
+  svg.setAttribute("height", String(surfaceHeight));
+  svg.setAttribute("viewBox", `0 0 ${surfaceWidth} ${surfaceHeight}`);
+
+  for (const block of state.blocks) {
+    if (!block.parentId) {
+      continue;
+    }
+
+    const parent = getBlockById(block.parentId);
+    if (!parent) {
+      continue;
+    }
+
+    const from = blockCenter(parent);
+    const to = blockCenter(block);
+
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", String(from.x));
+    line.setAttribute("y1", String(from.y));
+    line.setAttribute("x2", String(to.x));
+    line.setAttribute("y2", String(to.y));
+    svg.appendChild(line);
+  }
+
+  return svg;
+}
+
+function renderWorkspace() {
   elements.treeMeta.textContent = `${state.blocks.length} block${state.blocks.length === 1 ? "" : "s"}`;
   elements.treeCanvas.innerHTML = "";
 
-  if (roots.length === 0) {
+  if (state.blocks.length === 0) {
     elements.treeCanvas.classList.add("empty");
-    elements.treeCanvas.textContent = "No blocks yet. Click \"Add Root Block\" to begin.";
+    elements.treeCanvas.textContent = "Double-click on this paper grid to create your first block.";
     return;
   }
 
   elements.treeCanvas.classList.remove("empty");
-  for (const root of roots) {
-    elements.treeCanvas.appendChild(renderTreeNode(root, 0));
+
+  const maxGx = Math.max(...state.blocks.map((block) => block.gx));
+  const maxGy = Math.max(...state.blocks.map((block) => block.gy));
+  const minSurfaceWidth = Math.max(elements.treeCanvas.clientWidth - 2, 1);
+  const minSurfaceHeight = Math.max(elements.treeCanvas.clientHeight - 2, 1);
+
+  const surfaceWidth = Math.max(minSurfaceWidth, GRID.pad * 2 + (maxGx + 1) * GRID.col);
+  const surfaceHeight = Math.max(minSurfaceHeight, GRID.pad * 2 + (maxGy + 1) * GRID.row);
+
+  const surface = document.createElement("div");
+  surface.className = "grid-surface";
+  surface.style.width = `${surfaceWidth}px`;
+  surface.style.height = `${surfaceHeight}px`;
+  surface.appendChild(renderLinks(surfaceWidth, surfaceHeight));
+
+  const sortedBlocks = [...state.blocks].sort((a, b) => {
+    if (a.gy === b.gy) {
+      return a.gx - b.gx;
+    }
+    return a.gy - b.gy;
+  });
+
+  for (const block of sortedBlocks) {
+    const fragment = elements.blockNodeTemplate.content.cloneNode(true);
+    const node = fragment.querySelector(".grid-node");
+    const title = fragment.querySelector(".node-title");
+    const meta = fragment.querySelector(".node-meta");
+
+    node.dataset.id = block.id;
+    node.style.left = `${GRID.pad + block.gx * GRID.col}px`;
+    node.style.top = `${GRID.pad + block.gy * GRID.row}px`;
+
+    title.textContent = block.title || "New Block";
+    const typeLabel = block.type || "block";
+    meta.textContent = `${typeLabel} | grid ${block.gx},${block.gy}`;
+
+    if (block.id === state.selectedId) {
+      node.classList.add("active");
+    }
+
+    node.addEventListener("click", () => {
+      state.selectedId = block.id;
+      render();
+    });
+
+    node.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      createBlock({ parentId: block.id, gx: block.gx + 1, gy: block.gy });
+    });
+
+    surface.appendChild(fragment);
   }
+
+  elements.treeCanvas.appendChild(surface);
 }
 
 function renderValues(block) {
@@ -299,7 +496,6 @@ function renderValues(block) {
 
   block.values.forEach((item, index) => {
     const fragment = elements.valueRowTemplate.content.cloneNode(true);
-    const row = fragment.querySelector(".value-row");
     const keyInput = fragment.querySelector(".value-key");
     const valueInput = fragment.querySelector(".value-value");
     const removeButton = fragment.querySelector(".remove-value");
@@ -329,7 +525,6 @@ function renderValues(block) {
       renderValues(block);
     });
 
-    row.dataset.index = String(index);
     elements.valuesList.appendChild(fragment);
   });
 }
@@ -356,29 +551,46 @@ function renderDetail() {
 }
 
 function render() {
-  renderTree();
+  renderWorkspace();
   renderDetail();
 }
 
 function wireInputs() {
   elements.addRootBtn.addEventListener("click", () => {
-    createBlock(null);
+    createBlock({ parentId: null });
   });
 
   elements.addChildBtn.addEventListener("click", () => {
     if (!state.selectedId) {
-      createBlock(null);
+      createBlock({ parentId: null });
       return;
     }
-    createBlock(state.selectedId);
+    createBlock({ parentId: state.selectedId });
   });
 
   elements.addChildInFormBtn.addEventListener("click", () => {
     if (!state.selectedId) {
-      createBlock(null);
+      createBlock({ parentId: null });
       return;
     }
-    createBlock(state.selectedId);
+    createBlock({ parentId: state.selectedId });
+  });
+
+  elements.treeCanvas.addEventListener("dblclick", (event) => {
+    const node = event.target.closest(".grid-node");
+    if (node) {
+      return;
+    }
+
+    const surface = elements.treeCanvas.querySelector(".grid-surface") || elements.treeCanvas;
+    const rect = surface.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left - GRID.pad;
+    const offsetY = event.clientY - rect.top - GRID.pad;
+
+    const gx = Math.max(0, Math.round(offsetX / GRID.col));
+    const gy = Math.max(0, Math.round(offsetY / GRID.row));
+
+    createBlock({ parentId: null, gx, gy });
   });
 
   elements.exportBtn.addEventListener("click", () => {
@@ -390,11 +602,13 @@ function wireInputs() {
     if (!file) {
       return;
     }
+
     try {
       await importState(file);
     } catch {
       setStatus("Import failed. Use valid Block JSON.");
     }
+
     event.target.value = "";
   });
 
@@ -403,6 +617,7 @@ function wireInputs() {
     if (!proceed) {
       return;
     }
+
     state.blocks = [];
     state.selectedId = null;
     markDirty();
@@ -411,7 +626,7 @@ function wireInputs() {
   });
 
   elements.titleInput.addEventListener("input", (event) => {
-    updateBlock({ title: event.target.value || "Untitled Block" });
+    updateBlock({ title: event.target.value || "New Block" });
   });
 
   elements.typeInput.addEventListener("input", (event) => {
@@ -435,6 +650,7 @@ function wireInputs() {
     if (!block) {
       return;
     }
+
     block.values.push({ key: "", value: "" });
     block.updatedAt = nowIso();
     markDirty();
@@ -448,13 +664,13 @@ function wireInputs() {
       return;
     }
 
-    const childTotal = descendantIds(block.id).length;
-    const proceed = window.confirm(
-      childTotal > 0
-        ? `Delete this block and ${childTotal} descendant block(s)?`
-        : "Delete this block?"
-    );
+    const childCount = descendantIds(block.id).length;
+    const prompt =
+      childCount > 0
+        ? `Delete this block and ${childCount} descendant block(s)?`
+        : "Delete this block?";
 
+    const proceed = window.confirm(prompt);
     if (!proceed) {
       return;
     }
@@ -473,8 +689,9 @@ function initialize() {
   loadState();
   wireInputs();
   render();
+
   if (state.blocks.length === 0) {
-    setStatus("No saved blocks yet. Start by adding a root block.");
+    setStatus("No blocks yet. Double-click the paper grid to create one.");
   } else {
     setStatus(`Loaded ${state.blocks.length} block${state.blocks.length === 1 ? "" : "s"}.`);
   }

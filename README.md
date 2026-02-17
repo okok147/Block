@@ -44,8 +44,8 @@ Then open `http://localhost:4173` to check blocks by field, tags, and search.
 
 - URL (local): `http://localhost:4173/builder.html`
 - Features:
-  - Create root blocks.
-  - Click a block and create child blocks.
+  - Double-click blank paper to create a block snapped to the existing grid.
+  - Double-click a block to create a child block on the same grid system.
   - Document each block with title/type/status/tags/notes.
   - Add custom input values as key-value rows.
   - Auto-save to browser `localStorage`.
